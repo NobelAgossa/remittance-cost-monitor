@@ -1,0 +1,14 @@
+[sqlfluff]
+dialect = bigquery
+# The jinja templater renders dbt models without a warehouse connection,
+# so linting works offline and in CI.
+templater = jinja
+max_line_length = 100
+
+[sqlfluff:templater:jinja]
+# Mocks ref(), source(), config(), var() and is_incremental().
+apply_dbt_builtins = True
+
+[sqlfluff:templater:jinja:macros]
+# env_var() is not mocked by apply_dbt_builtins: return the default value.
+env_var = {% macro env_var(name, default='') %}{{ default }}{% endmacro %}

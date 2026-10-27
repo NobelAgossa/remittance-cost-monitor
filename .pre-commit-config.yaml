@@ -1,0 +1,32 @@
+# Install the git hook once with: uv run pre-commit install
+# Ruff and sqlfluff run from the project environment (uv.lock), so their
+# versions are pinned in one place only: pyproject.toml.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: detect-private-key
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run --no-sync ruff check --fix
+        language: unsupported
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --no-sync ruff format
+        language: unsupported
+        types_or: [python, pyi]
+      - id: sqlfluff-lint
+        name: sqlfluff lint
+        entry: uv run --no-sync sqlfluff lint
+        language: unsupported
+        types: [sql]

@@ -1,0 +1,41 @@
+[project]
+name = "remittance-cost-monitor"
+version = "0.1.0"
+description = "Data pipeline measuring the real cost of sending money to West Africa (XOF countries)."
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "google-cloud-bigquery==3.46.2",
+    "python-dotenv==1.2.4",
+]
+
+[dependency-groups]
+dbt = [
+    "dbt-bigquery==1.12.1",
+    "dbt-core==1.12.6",
+]
+dev = [
+    "apache-airflow==3.3.2",
+    "openpyxl==3.1.5",
+    "pandas==3.1.0",
+    "pre-commit==4.7.0",
+    "pytest==9.1.1",
+    "ruff==0.17.2",
+    "sqlfluff==4.4.0",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dbt", "dev"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
