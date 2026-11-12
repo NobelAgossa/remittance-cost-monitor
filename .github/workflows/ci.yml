@@ -1,0 +1,50 @@
+# Quality checks on every push and pull request. No cloud credentials: nothing here
+# talks to BigQuery (dbt parse only reads the project, the unit tests mock the client).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    env:
+      # Placeholders so dbt can render profiles.yml; dbt parse never connects.
+      GCP_PROJECT_ID: ci-placeholder
+      BQ_LOCATION: EU
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v7.0.1
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.13.5"
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install the locked dependencies
+        run: uv sync --locked
+
+      - name: Create the dbt profile from the example
+        run: cp dbt/profiles.example.yml dbt/profiles.yml
+
+      - name: Format check
+        run: uv run --no-sync ruff format --check .
+
+      - name: Lint check
+        run: uv run --no-sync ruff check .
+
+      - name: Tests check
+        run: uv run --no-sync pytest
+
+      - name: SQL lint check
+        run: uv run --no-sync sqlfluff lint dbt
+
+      - name: dbt parse
+        run: uv run --no-sync dbt parse --project-dir dbt --profiles-dir dbt
