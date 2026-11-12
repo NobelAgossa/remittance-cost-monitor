@@ -1,0 +1,17 @@
+models:
+  - name: stg_reference__currency_pegs
+    description: Fixed currency parities from the currency_pegs seed, one row per pegged currency.
+    columns:
+      - name: currency_code
+        description: ISO 4217 code of the pegged currency. One row per currency.
+        data_tests:
+          - not_null
+          - unique
+      - name: anchor_currency_code
+        description: ISO 4217 code of the anchor currency.
+        data_tests:
+          - not_null
+      - name: units_per_anchor
+        description: Units of the pegged currency per 1 unit of the anchor currency.
+        data_tests:
+          - not_null

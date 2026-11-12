@@ -1,0 +1,26 @@
+name: remittance_cost_monitor
+version: "0.1.0"
+profile: remittance_cost_monitor
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+clean-targets: ["target", "dbt_packages"]
+
+# Every model is a `table` (full rebuild): the BigQuery sandbox forbids the DML
+# that incremental models and snapshots need.
+# `+schema` is the BigQuery dataset; dev targets add a suffix (see macros/).
+models:
+  remittance_cost_monitor:
+    +materialized: table
+    staging:
+      +schema: "{{ env_var('BQ_STAGING_DATASET', 'staging') }}"
+    intermediate:
+      +schema: "{{ env_var('BQ_STAGING_DATASET', 'staging') }}"
+    marts:
+      +schema: "{{ env_var('BQ_MARTS_DATASET', 'marts') }}"
+
+seeds:
+  remittance_cost_monitor:
+    +schema: "{{ env_var('BQ_STAGING_DATASET', 'staging') }}"

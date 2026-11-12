@@ -1,0 +1,35 @@
+seeds:
+  - name: currency_pegs
+    description: Fixed currency parities. XOF is pegged to EUR at 655.957 XOF per 1 EUR.
+    config:
+      column_types:
+        currency_code: string
+        anchor_currency_code: string
+        units_per_anchor: numeric
+    columns:
+      - name: currency_code
+        description: ISO 4217 code of the pegged currency (for example XOF).
+      - name: anchor_currency_code
+        description: ISO 4217 code of the anchor currency (for example EUR).
+      - name: units_per_anchor
+        description: Units of the pegged currency per 1 unit of the anchor currency.
+
+  - name: countries
+    description: >
+      Countries of the RPW corridors, with their currency and whether they are in scope.
+      Filled in week 2 from the corridor check.
+    config:
+      column_types:
+        country_code: string
+        country_name: string
+        currency_code: string
+        in_scope: boolean
+    columns:
+      - name: country_code
+        description: ISO country code (format confirmed in week 2 from the RPW file).
+      - name: country_name
+        description: Country name.
+      - name: currency_code
+        description: ISO 4217 code of the country's currency.
+      - name: in_scope
+        description: True for the receiving countries analysed by the dashboard.
